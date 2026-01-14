@@ -66,7 +66,7 @@
     "@vitejs/plugin-react": "^4.3.4",
     "@vitest/coverage-v8": "^4.0.17",
     "autoprefixer": "^10.4.20",
-    "electron": "^35.2.1",
+    "electron": "^33.4.11",
     "electron-builder": "^25.1.8",
     "happy-dom": "^20.1.0",
     "jsdom": "^27.4.0",
@@ -134,7 +134,7 @@
     "publish": {
       "provider": "github",
       "owner": "accomplish-ai",
-      "repo": "openwork"
+      "repo": "kevin"
     },
     "mac": {
       "category": "public.app-category.productivity",
@@ -143,7 +143,10 @@
       "entitlements": "resources/entitlements.mac.plist",
       "entitlementsInherit": "resources/entitlements.mac.plist",
       "icon": "resources/icon.png",
-      "target": ["dmg", "zip"]
+      "target": [
+        "dmg",
+        "zip"
+      ]
     },
     "dmg": {
       "contents": [

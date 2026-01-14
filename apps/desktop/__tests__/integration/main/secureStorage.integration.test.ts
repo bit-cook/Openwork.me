@@ -241,7 +241,6 @@ describe('secureStorage Integration', () => {
         anthropic: null,
         openai: null,
         google: null,
-        groq: null,
         custom: null,
       });
     });
@@ -348,7 +347,6 @@ describe('secureStorage Integration', () => {
         anthropic: null,
         openai: null,
         google: null,
-        groq: null,
         custom: null,
       });
     });

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Openwork is a standalone desktop automation assistant built with Electron. The app hosts a local React UI (bundled via Vite), communicating with the main process through `contextBridge` IPC. The main process spawns the OpenCode CLI (via `node-pty`) to execute user tasks. Users provide their own API key (Anthropic, OpenAI, Google, or Groq) on first launch, stored securely in the OS keychain.
+Accomplish is a standalone desktop automation assistant built with Electron. The app hosts a local React UI (bundled via Vite), communicating with the main process through `contextBridge` IPC. The main process spawns the Claude Code CLI (via `node-pty`) to execute user tasks. Users provide their own Anthropic API key on first launch, stored securely in the OS keychain.
 
 ## Common Commands
 
@@ -34,7 +34,7 @@ packages/shared/  # Shared TypeScript types
 **Main Process** (`main/`):
 - `index.ts` - Electron bootstrap, single-instance enforcement, `accomplish://` protocol handler
 - `ipc/handlers.ts` - IPC handlers for task lifecycle, settings, onboarding, API keys
-- `opencode/adapter.ts` - OpenCode CLI wrapper using `node-pty`, streams output and handles permissions
+- `claude/adapter.ts` - Claude Code CLI wrapper using `node-pty`, streams output and handles permissions
 - `store/secureStorage.ts` - API key storage via `keytar` (OS keychain)
 - `store/appSettings.ts` - App settings via `electron-store` (debug mode, onboarding state)
 - `store/taskHistory.ts` - Task history persistence
@@ -65,10 +65,10 @@ Renderer
 ```
 
 ### Key Dependencies
-- `node-pty` - PTY for OpenCode CLI spawning
+- `node-pty` - PTY for Claude CLI spawning
 - `keytar` - Secure API key storage (OS keychain)
 - `electron-store` - Local settings/preferences
-- `opencode-ai` - Bundled OpenCode CLI (multi-provider: Anthropic, OpenAI, Google, Groq)
+- `@anthropic-ai/claude-code` - Bundled Claude CLI
 
 ## Code Conventions
 
@@ -157,6 +157,6 @@ environment: {
 
 - Single-instance enforcement - second instance focuses existing window
 - API keys stored in OS keychain (macOS Keychain, Windows Credential Vault, Linux Secret Service)
-- API key validation via test request to respective provider API
-- OpenCode CLI permissions are bridged to UI via IPC `permission:request` / `permission:respond`
+- API key validation via test request to Anthropic API
+- Claude CLI permissions are bridged to UI via IPC `permission:request` / `permission:respond`
 - Task output streams through `task:update` and `task:progress` IPC events

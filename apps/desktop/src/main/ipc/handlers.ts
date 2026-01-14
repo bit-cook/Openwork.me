@@ -63,7 +63,7 @@ import {
 } from './validation';
 
 const MAX_TEXT_LENGTH = 8000;
-const ALLOWED_API_KEY_PROVIDERS = new Set(['anthropic', 'openai', 'google', 'groq', 'custom']);
+const ALLOWED_API_KEY_PROVIDERS = new Set(['anthropic', 'openai', 'google', 'custom']);
 const API_KEY_VALIDATION_TIMEOUT_MS = 15000;
 
 /**
@@ -776,19 +776,6 @@ export function registerIPCHandlers(): void {
             `https://generativelanguage.googleapis.com/v1beta/models?key=${sanitizedKey}`,
             {
               method: 'GET',
-            },
-            API_KEY_VALIDATION_TIMEOUT_MS
-          );
-          break;
-
-        case 'groq':
-          response = await fetchWithTimeout(
-            'https://api.groq.com/openai/v1/models',
-            {
-              method: 'GET',
-              headers: {
-                'Authorization': `Bearer ${sanitizedKey}`,
-              },
             },
             API_KEY_VALIDATION_TIMEOUT_MS
           );

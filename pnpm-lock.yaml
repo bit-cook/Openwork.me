@@ -130,8 +130,8 @@ importers:
         specifier: ^10.4.20
         version: 10.4.23(postcss@8.5.6)
       electron:
-        specifier: ^35.2.1
-        version: 35.7.5
+        specifier: ^33.4.11
+        version: 33.4.11
       electron-builder:
         specifier: ^25.1.8
         version: 25.1.8(electron-builder-squirrel-windows@25.1.8)
@@ -2096,8 +2096,8 @@ packages:
   electron-to-chromium@1.5.267:
     resolution: {integrity: sha512-0Drusm6MVRXSOJpGbaSVgcQsuB4hEkMpHXaVstcPmhu5LIedxs1xNK/nIxmQIU/RPC0+1/o0AVZfBTkTNJOdUw==}
 
-  electron@35.7.5:
-    resolution: {integrity: sha512-dnL+JvLraKZl7iusXTVTGYs10TKfzUi30uEDTqsmTm0guN9V2tbOjTzyIZbh9n3ygUjgEYyo+igAwMRXIi3IPw==}
+  electron@33.4.11:
+    resolution: {integrity: sha512-xmdAs5QWRkInC7TpXGNvzo/7exojubk+72jn1oJL7keNeIlw7xNglf8TGtJtkR4rWC5FJq0oXiIXPS9BcK2Irg==}
     engines: {node: '>= 12.20.55'}
     hasBin: true
 
@@ -6057,10 +6057,10 @@ snapshots:
 
   electron-to-chromium@1.5.267: {}
 
-  electron@35.7.5:
+  electron@33.4.11:
     dependencies:
       '@electron/get': 2.0.3
-      '@types/node': 22.19.3
+      '@types/node': 20.19.27
       extract-zip: 2.0.1
     transitivePeerDependencies:
       - supports-color
