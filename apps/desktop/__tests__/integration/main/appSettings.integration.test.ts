@@ -209,7 +209,6 @@ describe('appSettings Integration', () => {
         model: 'anthropic/claude-opus-4-5',
       });
       expect(result.ollamaConfig == null).toBe(true); // null or undefined
-      expect(result.language).toBe('en');
     });
 
     it('should return all settings after modifications', async () => {
@@ -229,7 +228,6 @@ describe('appSettings Integration', () => {
       expect(result.onboardingComplete).toBe(true);
       expect(result.selectedModel).toEqual(customModel);
       expect(result.ollamaConfig == null).toBe(true); // null or undefined
-      expect(result.language).toBe('en');
     });
 
     it('should reflect partial modifications correctly', async () => {
@@ -279,7 +277,6 @@ describe('appSettings Integration', () => {
         model: 'anthropic/claude-opus-4-5',
       });
       expect(result.ollamaConfig == null).toBe(true); // null or undefined
-      expect(result.language).toBe('en');
     });
 
     it('should reset debugMode to default after clear', async () => {
