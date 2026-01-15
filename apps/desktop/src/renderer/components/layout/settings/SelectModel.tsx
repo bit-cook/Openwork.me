@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { ChevronLeft } from 'lucide-react';
 import { getAccomplish } from '@/lib/accomplish';
 import { analytics } from '@/lib/analytics';
@@ -15,7 +14,6 @@ interface SelectModelProps {
 }
 
 export default function SelectModel({ providerId, onDone, onBack }: SelectModelProps) {
-  const { t } = useTranslation();
   const [selectedModel, setSelectedModel] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
@@ -46,16 +44,14 @@ export default function SelectModel({ providerId, onDone, onBack }: SelectModelP
 
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-medium text-foreground">
-        {t('settings.wizard.selectModel', 'Select Model')}
-      </h2>
+      <h2 className="text-lg font-medium text-foreground">Select Model</h2>
       <select
         value={selectedModel}
         onChange={(e) => setSelectedModel(e.target.value)}
         className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
       >
         <option value="" disabled>
-          {t('settings.model.selectModel', 'Select a model...')}
+          Select a model...
         </option>
         {models.map((model) => (
           <option key={model.fullId} value={model.fullId}>
@@ -70,7 +66,7 @@ export default function SelectModel({ providerId, onDone, onBack }: SelectModelP
           className="flex items-center gap-1 rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
         >
           <ChevronLeft className="h-4 w-4" />
-          {t('settings.wizard.back', 'Back')}
+          Back
         </button>
         <button
           type="button"
@@ -78,7 +74,7 @@ export default function SelectModel({ providerId, onDone, onBack }: SelectModelP
           disabled={!selectedModel || isSaving}
           className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
         >
-          {isSaving ? t('settings.model.saving', 'Saving...') : t('settings.wizard.done', 'Done')}
+          {isSaving ? 'Saving...' : 'Done'}
         </button>
       </div>
     </div>

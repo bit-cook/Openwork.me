@@ -17,41 +17,6 @@ vi.mock('@/lib/analytics', () => ({
   },
 }));
 
-// Mock react-i18next with translations for Home page
-const translations: Record<string, string> = {
-  'home.title': 'What will you accomplish today?',
-  'home.placeholder': 'Describe a task and let AI handle the rest',
-  'home.examples.title': 'Example prompts',
-  'home.examples.toggle': 'Example prompts',
-};
-
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string, defaultValue?: string | Record<string, unknown>, options?: Record<string, unknown>) => {
-      // Return translation from our mock translations
-      if (translations[key]) {
-        return translations[key];
-      }
-      // Handle both t(key, fallback) and t(key, fallback, { count: n }) formats
-      if (typeof defaultValue === 'string') {
-        if (options) {
-          let result = defaultValue;
-          Object.entries(options).forEach(([k, v]) => {
-            result = result.replace(`{{${k}}}`, String(v));
-          });
-          return result;
-        }
-        return defaultValue;
-      }
-      return key;
-    },
-    i18n: {
-      changeLanguage: vi.fn(),
-      language: 'en',
-    },
-  }),
-}));
-
 // Create mock functions
 const mockStartTask = vi.fn();
 const mockAddTaskUpdate = vi.fn();
@@ -223,11 +188,7 @@ describe('Home Page Integration', () => {
         </MemoryRouter>
       );
 
-      // Expand examples section (collapsed by default)
-      const toggleButton = screen.getByText(/example prompts/i).closest('button');
-      fireEvent.click(toggleButton!);
-
-      // Assert - Check for some example use cases
+      // Assert - Check for some example use cases (expanded by default)
       await waitFor(() => {
         expect(screen.getByText('Calendar Prep Notes')).toBeInTheDocument();
         expect(screen.getByText('Inbox Promo Cleanup')).toBeInTheDocument();
@@ -473,11 +434,7 @@ describe('Home Page Integration', () => {
         </MemoryRouter>
       );
 
-      // Expand examples section (collapsed by default)
-      const toggleButton = screen.getByText(/example prompts/i).closest('button');
-      fireEvent.click(toggleButton!);
-
-      // Act - Click on Calendar Prep Notes example
+      // Act - Click on Calendar Prep Notes example (expanded by default)
       await waitFor(() => {
         expect(screen.getByText('Calendar Prep Notes')).toBeInTheDocument();
       });
@@ -501,24 +458,26 @@ describe('Home Page Integration', () => {
         </MemoryRouter>
       );
 
-      // Assert - Examples should be hidden initially (collapsed by default)
-      expect(screen.queryByText('Calendar Prep Notes')).not.toBeInTheDocument();
-
-      // Act - Toggle examples on
-      const toggleButton = screen.getByText(/example prompts/i).closest('button');
-      fireEvent.click(toggleButton!);
-
-      // Assert - Examples should be visible now
+      // Assert - Examples should be visible initially (expanded by default)
       await waitFor(() => {
         expect(screen.getByText('Calendar Prep Notes')).toBeInTheDocument();
       });
 
-      // Act - Toggle examples off again
+      // Act - Toggle examples off
+      const toggleButton = screen.getByText(/example prompts/i).closest('button');
       fireEvent.click(toggleButton!);
 
-      // Assert - Examples should be hidden again
+      // Assert - Examples should be hidden now
       await waitFor(() => {
         expect(screen.queryByText('Calendar Prep Notes')).not.toBeInTheDocument();
+      });
+
+      // Act - Toggle examples on again
+      fireEvent.click(toggleButton!);
+
+      // Assert - Examples should be visible again
+      await waitFor(() => {
+        expect(screen.getByText('Calendar Prep Notes')).toBeInTheDocument();
       });
     });
 
@@ -530,11 +489,7 @@ describe('Home Page Integration', () => {
         </MemoryRouter>
       );
 
-      // Expand examples section (collapsed by default)
-      const toggleButton = screen.getByText(/example prompts/i).closest('button');
-      fireEvent.click(toggleButton!);
-
-      // Assert
+      // Assert - examples are expanded by default
       const expectedExamples = [
         'Calendar Prep Notes',
         'Inbox Promo Cleanup',

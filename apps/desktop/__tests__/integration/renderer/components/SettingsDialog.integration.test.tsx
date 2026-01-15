@@ -19,37 +19,13 @@ vi.mock('@/lib/analytics', () => ({
   },
 }));
 
-// Mock i18next
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string, fallbackOrOptions?: string | Record<string, unknown>, options?: Record<string, unknown>) => {
-      // Handle both t(key, fallback) and t(key, fallback, { count: n }) formats
-      let fallback = typeof fallbackOrOptions === 'string' ? fallbackOrOptions : key;
-      const interpolations = typeof fallbackOrOptions === 'object' ? fallbackOrOptions : options;
-
-      // Simple interpolation for {{variable}} patterns
-      if (interpolations) {
-        Object.entries(interpolations).forEach(([k, v]) => {
-          fallback = fallback.replace(new RegExp(`\\{\\{${k}\\}\\}`, 'g'), String(v));
-        });
-      }
-      return fallback;
-    },
-    i18n: {
-      changeLanguage: vi.fn(),
-    },
-  }),
-}));
-
 // Create mock functions for accomplish API
 const mockGetApiKeys = vi.fn();
 const mockGetDebugMode = vi.fn();
 const mockGetVersion = vi.fn();
 const mockGetSelectedModel = vi.fn();
-const mockGetLanguage = vi.fn();
 const mockSetDebugMode = vi.fn();
 const mockSetSelectedModel = vi.fn();
-const mockSetLanguage = vi.fn();
 const mockAddApiKey = vi.fn();
 const mockRemoveApiKey = vi.fn();
 const mockValidateApiKeyForProvider = vi.fn();
@@ -62,10 +38,8 @@ const mockAccomplish = {
   getDebugMode: mockGetDebugMode,
   getVersion: mockGetVersion,
   getSelectedModel: mockGetSelectedModel,
-  getLanguage: mockGetLanguage,
   setDebugMode: mockSetDebugMode,
   setSelectedModel: mockSetSelectedModel,
-  setLanguage: mockSetLanguage,
   addApiKey: mockAddApiKey,
   removeApiKey: mockRemoveApiKey,
   validateApiKeyForProvider: mockValidateApiKeyForProvider,
@@ -127,10 +101,8 @@ describe('SettingsDialog Integration', () => {
     mockGetDebugMode.mockResolvedValue(false);
     mockGetVersion.mockResolvedValue('1.0.0');
     mockGetSelectedModel.mockResolvedValue({ provider: 'anthropic', model: 'anthropic/claude-opus-4-5' });
-    mockGetLanguage.mockResolvedValue('en');
     mockSetDebugMode.mockResolvedValue(undefined);
     mockSetSelectedModel.mockResolvedValue(undefined);
-    mockSetLanguage.mockResolvedValue(undefined);
     mockValidateApiKeyForProvider.mockResolvedValue({ valid: true });
     mockAddApiKey.mockResolvedValue({ id: 'key-1', provider: 'anthropic', keyPrefix: 'sk-ant-...' });
     mockRemoveApiKey.mockResolvedValue(undefined);
@@ -163,7 +135,7 @@ describe('SettingsDialog Integration', () => {
 
       // Assert
       await waitFor(() => {
-        expect(screen.getByText('settings.title')).toBeInTheDocument();
+        expect(screen.getByText('Settings')).toBeInTheDocument();
       });
     });
 
@@ -176,7 +148,6 @@ describe('SettingsDialog Integration', () => {
         expect(mockGetApiKeys).toHaveBeenCalled();
         expect(mockGetDebugMode).toHaveBeenCalled();
         expect(mockGetVersion).toHaveBeenCalled();
-        expect(mockGetLanguage).toHaveBeenCalled();
       });
     });
 
@@ -673,7 +644,7 @@ describe('SettingsDialog Integration', () => {
 
       // Assert
       await waitFor(() => {
-        expect(screen.getByText(/Connected - 2 model\(s\) available/)).toBeInTheDocument();
+        expect(screen.getByText(/Connected/)).toBeInTheDocument();
         expect(screen.getByText('Use This Model')).toBeInTheDocument();
       });
     });
@@ -696,7 +667,7 @@ describe('SettingsDialog Integration', () => {
 
       // Assert
       await waitFor(() => {
-        expect(screen.getByText('settings.debug.title')).toBeInTheDocument();
+        expect(screen.getByText('Debug Mode')).toBeInTheDocument();
       });
     });
 
@@ -780,7 +751,7 @@ describe('SettingsDialog Integration', () => {
 
       // Assert
       await waitFor(() => {
-        expect(screen.getByText('settings.about.title')).toBeInTheDocument();
+        expect(screen.getByText('About')).toBeInTheDocument();
       });
     });
 
@@ -824,46 +795,6 @@ describe('SettingsDialog Integration', () => {
       // Assert
       await waitFor(() => {
         expect(screen.getByText('Version 0.1.0')).toBeInTheDocument();
-      });
-    });
-  });
-
-  describe('language selection', () => {
-    it('should render Language section', async () => {
-      // Arrange & Act
-      render(<SettingsDialog {...defaultProps} />);
-
-      // Assert
-      await waitFor(() => {
-        expect(screen.getByText('settings.language.title')).toBeInTheDocument();
-      });
-    });
-
-    it('should show English selected by default', async () => {
-      // Arrange
-      mockGetLanguage.mockResolvedValue('en');
-      render(<SettingsDialog {...defaultProps} />);
-
-      // Assert
-      await waitFor(() => {
-        const select = screen.getByRole('combobox');
-        expect(select).toHaveValue('en');
-      });
-    });
-
-    it('should call setLanguage when language is changed', async () => {
-      // Arrange
-      render(<SettingsDialog {...defaultProps} />);
-
-      // Act
-      await waitFor(() => {
-        expect(screen.getByRole('combobox')).toBeInTheDocument();
-      });
-      fireEvent.change(screen.getByRole('combobox'), { target: { value: 'ja' } });
-
-      // Assert
-      await waitFor(() => {
-        expect(mockSetLanguage).toHaveBeenCalledWith('ja');
       });
     });
   });

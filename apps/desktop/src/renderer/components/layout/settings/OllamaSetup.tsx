@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { ChevronLeft } from 'lucide-react';
 import { getAccomplish } from '@/lib/accomplish';
 
@@ -17,7 +16,6 @@ interface OllamaSetupProps {
 }
 
 export default function OllamaSetup({ onDone, onBack }: OllamaSetupProps) {
-  const { t } = useTranslation();
   const [ollamaUrl, setOllamaUrl] = useState('http://localhost:11434');
   const [ollamaModels, setOllamaModels] = useState<OllamaModel[]>([]);
   const [ollamaConnected, setOllamaConnected] = useState(false);
@@ -84,16 +82,14 @@ export default function OllamaSetup({ onDone, onBack }: OllamaSetupProps) {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-medium text-foreground">
-        {t('settings.model.localModels', 'Local Models')}
-      </h2>
+      <h2 className="text-lg font-medium text-foreground">Local Models</h2>
       <p className="text-sm text-muted-foreground">
-        {t('settings.model.localDescription', 'Connect to a local Ollama server to use models running on your machine.')}
+        Connect to a local Ollama server to use models running on your machine.
       </p>
 
       <div className="mb-4">
         <label className="mb-2 block text-sm font-medium text-foreground">
-          {t('settings.model.ollamaUrl', 'Ollama Server URL')}
+          Ollama Server URL
         </label>
         <div className="flex gap-2">
           <input
@@ -113,7 +109,7 @@ export default function OllamaSetup({ onDone, onBack }: OllamaSetupProps) {
             disabled={testingOllama}
             className="rounded-md bg-muted px-4 py-2 text-sm font-medium hover:bg-muted/80 disabled:opacity-50"
           >
-            {testingOllama ? t('settings.model.testing', 'Testing...') : t('settings.model.test', 'Test')}
+            {testingOllama ? 'Testing...' : 'Test'}
           </button>
         </div>
       </div>
@@ -123,7 +119,7 @@ export default function OllamaSetup({ onDone, onBack }: OllamaSetupProps) {
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
-          {t('settings.model.connected', 'Connected - {{count}} model(s) available', { count: ollamaModels.length })}
+          Connected - {ollamaModels.length} model{ollamaModels.length !== 1 ? 's' : ''} available
         </div>
       )}
 
@@ -139,7 +135,7 @@ export default function OllamaSetup({ onDone, onBack }: OllamaSetupProps) {
       {ollamaConnected && ollamaModels.length > 0 && (
         <div>
           <label className="mb-2 block text-sm font-medium text-foreground">
-            {t('settings.model.selectModelLabel', 'Select Model')}
+            Select Model
           </label>
           <select
             value={selectedOllamaModel}
@@ -157,10 +153,11 @@ export default function OllamaSetup({ onDone, onBack }: OllamaSetupProps) {
 
       {!ollamaConnected && !ollamaError && (
         <p className="text-sm text-muted-foreground">
-          {t('settings.model.ollamaHelp', 'Make sure Ollama is installed and running, then click Test to connect.')}{' '}
+          Make sure{' '}
           <a href="https://ollama.ai" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
             Ollama
-          </a>
+          </a>{' '}
+          is installed and running, then click Test to connect.
         </p>
       )}
 
@@ -171,7 +168,7 @@ export default function OllamaSetup({ onDone, onBack }: OllamaSetupProps) {
           className="flex items-center gap-1 rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
         >
           <ChevronLeft className="h-4 w-4" />
-          {t('settings.wizard.back', 'Back')}
+          Back
         </button>
         {ollamaConnected && selectedOllamaModel && (
           <button
@@ -180,7 +177,7 @@ export default function OllamaSetup({ onDone, onBack }: OllamaSetupProps) {
             disabled={savingOllama}
             className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
           >
-            {savingOllama ? t('settings.model.saving', 'Saving...') : t('settings.model.useThisModel', 'Use This Model')}
+            {savingOllama ? 'Saving...' : 'Use This Model'}
           </button>
         )}
       </div>

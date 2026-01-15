@@ -1,6 +1,5 @@
 'use client';
 
-import { useTranslation } from 'react-i18next';
 import { Cloud, HardDrive } from 'lucide-react';
 import type { ModelType } from './types';
 
@@ -9,13 +8,9 @@ interface ChooseModelTypeProps {
 }
 
 export default function ChooseModelType({ onSelect }: ChooseModelTypeProps) {
-  const { t } = useTranslation();
-
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-medium text-foreground">
-        {t('settings.wizard.chooseModel', 'Choose Model')}
-      </h2>
+      <h2 className="text-lg font-medium text-foreground">Choose Model</h2>
       <div className="grid grid-cols-2 gap-4">
         <button
           type="button"
@@ -24,11 +19,9 @@ export default function ChooseModelType({ onSelect }: ChooseModelTypeProps) {
         >
           <Cloud className="h-8 w-8 text-primary" />
           <div className="text-center">
-            <div className="font-medium text-foreground">
-              {t('settings.wizard.cloud', 'Cloud')}
-            </div>
+            <div className="font-medium text-foreground">Cloud</div>
             <div className="mt-1 text-sm text-muted-foreground">
-              {t('settings.wizard.cloudDescription', 'Use AI models from cloud providers')}
+              Use AI models from cloud providers
             </div>
           </div>
         </button>
@@ -39,11 +32,9 @@ export default function ChooseModelType({ onSelect }: ChooseModelTypeProps) {
         >
           <HardDrive className="h-8 w-8 text-primary" />
           <div className="text-center">
-            <div className="font-medium text-foreground">
-              {t('settings.wizard.local', 'Local')}
-            </div>
+            <div className="font-medium text-foreground">Local</div>
             <div className="mt-1 text-sm text-muted-foreground">
-              {t('settings.wizard.localDescription', 'Use Ollama on your machine')}
+              Use Ollama on your machine
             </div>
           </div>
         </button>

@@ -21,19 +21,6 @@ vi.mock('@/lib/analytics', () => ({
   analytics: { trackSaveApiKey: vi.fn(), trackSelectProvider: vi.fn() },
 }));
 
-// Mock react-i18next to return interpolated strings
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string, defaultValue: string, options?: Record<string, string>) => {
-      if (options && typeof defaultValue === 'string') {
-        return defaultValue.replace(/\{\{(\w+)\}\}/g, (_, name) => options[name] || '');
-      }
-      return typeof defaultValue === 'string' ? defaultValue : key;
-    },
-    i18n: { language: 'en' },
-  }),
-}));
-
 import ApiKeysSection from '@/components/layout/settings/ApiKeysSection';
 
 describe('ApiKeysSection', () => {

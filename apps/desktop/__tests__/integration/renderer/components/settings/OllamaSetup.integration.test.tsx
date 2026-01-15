@@ -16,19 +16,6 @@ vi.mock('@/lib/accomplish', () => ({
   }),
 }));
 
-// Mock react-i18next to return interpolated strings
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string, defaultValue: string, options?: Record<string, unknown>) => {
-      if (options && typeof defaultValue === 'string') {
-        return defaultValue.replace(/\{\{(\w+)\}\}/g, (_, name) => String(options[name] || ''));
-      }
-      return typeof defaultValue === 'string' ? defaultValue : key;
-    },
-    i18n: { language: 'en' },
-  }),
-}));
-
 import OllamaSetup from '@/components/layout/settings/OllamaSetup';
 
 describe('OllamaSetup', () => {

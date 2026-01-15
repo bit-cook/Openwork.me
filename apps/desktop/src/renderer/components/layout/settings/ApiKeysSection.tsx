@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Trash2, Plus, ChevronUp } from 'lucide-react';
 import { getAccomplish } from '@/lib/accomplish';
 import { analytics } from '@/lib/analytics';
@@ -14,7 +13,6 @@ interface ApiKeysSectionProps {
 }
 
 export default function ApiKeysSection({ savedKeys, onKeysChange }: ApiKeysSectionProps) {
-  const { t } = useTranslation();
   const [showAddForm, setShowAddForm] = useState(false);
   const [provider, setProvider] = useState<ProviderId>('anthropic');
   const [apiKey, setApiKey] = useState('');
@@ -28,12 +26,12 @@ export default function ApiKeysSection({ savedKeys, onKeysChange }: ApiKeysSecti
     const currentProvider = API_KEY_PROVIDERS.find((p) => p.id === provider)!;
 
     if (!trimmedKey) {
-      setError(t('settings.apiKey.error', 'Please enter an API key.'));
+      setError('Please enter an API key.');
       return;
     }
 
     if (!trimmedKey.startsWith(currentProvider.prefix)) {
-      setError(t('settings.apiKey.invalidFormat', `Invalid API key format. Key should start with ${currentProvider.prefix}`));
+      setError(`Invalid API key format. Key should start with ${currentProvider.prefix}`);
       return;
     }
 
@@ -74,9 +72,7 @@ export default function ApiKeysSection({ savedKeys, onKeysChange }: ApiKeysSecti
 
   return (
     <section>
-      <h2 className="mb-4 text-base font-medium text-foreground">
-        {t('settings.apiKeys.title', 'API Keys')}
-      </h2>
+      <h2 className="mb-4 text-base font-medium text-foreground">API Keys</h2>
       <div className="rounded-lg border border-border bg-card p-5">
         {savedKeys.length > 0 && (
           <div className="space-y-2 mb-4">
@@ -104,9 +100,7 @@ export default function ApiKeysSection({ savedKeys, onKeysChange }: ApiKeysSecti
                   </div>
                   {keyToDelete === key.id ? (
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-muted-foreground">
-                        {t('settings.apiKey.deleteConfirm', 'Are you sure?')}
-                      </span>
+                      <span className="text-xs text-muted-foreground">Are you sure?</span>
                       <button
                         type="button"
                         onClick={() => {
@@ -115,14 +109,14 @@ export default function ApiKeysSection({ savedKeys, onKeysChange }: ApiKeysSecti
                         }}
                         className="rounded px-2 py-1 text-xs font-medium bg-destructive text-destructive-foreground hover:bg-destructive/90"
                       >
-                        {t('common.yes', 'Yes')}
+                        Yes
                       </button>
                       <button
                         type="button"
                         onClick={() => setKeyToDelete(null)}
                         className="rounded px-2 py-1 text-xs font-medium bg-muted text-muted-foreground hover:bg-muted/80"
                       >
-                        {t('common.no', 'No')}
+                        No
                       </button>
                     </div>
                   ) : (
@@ -130,7 +124,7 @@ export default function ApiKeysSection({ savedKeys, onKeysChange }: ApiKeysSecti
                       type="button"
                       onClick={() => setKeyToDelete(key.id)}
                       className="rounded-lg p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
-                      title={t('settings.apiKey.removeTitle', 'Remove API key')}
+                      title="Remove API key"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
@@ -144,9 +138,7 @@ export default function ApiKeysSection({ savedKeys, onKeysChange }: ApiKeysSecti
         {showAddForm ? (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">
-                {t('settings.apiKeys.addNew', 'Add New API Key')}
-              </span>
+              <span className="text-sm font-medium">Add New API Key</span>
               <button
                 type="button"
                 onClick={() => setShowAddForm(false)}
@@ -188,9 +180,7 @@ export default function ApiKeysSection({ savedKeys, onKeysChange }: ApiKeysSecti
               disabled={isSaving}
               className="w-full rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
             >
-              {isSaving
-                ? t('settings.apiKey.saving', 'Saving...')
-                : t('settings.apiKey.saveButton', 'Save API Key')}
+              {isSaving ? 'Saving...' : 'Save API Key'}
             </button>
           </div>
         ) : (
@@ -200,7 +190,7 @@ export default function ApiKeysSection({ savedKeys, onKeysChange }: ApiKeysSecti
             className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
           >
             <Plus className="h-4 w-4" />
-            {t('settings.apiKeys.addButton', 'Add API Key')}
+            Add API Key
           </button>
         )}
       </div>

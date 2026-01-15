@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import { getAccomplish } from '@/lib/accomplish';
 import {
   Dialog,
@@ -9,7 +8,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Globe } from 'lucide-react';
 import type { ApiKeyConfig } from '@accomplish/shared';
 import logoImage from '/assets/logo.png';
 import {
@@ -31,8 +29,6 @@ interface SettingsDialogProps {
 }
 
 export default function SettingsDialog({ open, onOpenChange, onApiKeySaved }: SettingsDialogProps) {
-  const { t, i18n } = useTranslation();
-
   // Wizard state
   const [wizardStep, setWizardStep] = useState<WizardStep>('choose-type');
   const [selectedModelType, setSelectedModelType] = useState<ModelType>(null);
@@ -44,7 +40,6 @@ export default function SettingsDialog({ open, onOpenChange, onApiKeySaved }: Se
   const [debugMode, setDebugMode] = useState(false);
   const [loadingDebug, setLoadingDebug] = useState(true);
   const [appVersion, setAppVersion] = useState('');
-  const [currentLanguage, setCurrentLanguage] = useState('en');
   const [completionMessage, setCompletionMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -90,19 +85,9 @@ export default function SettingsDialog({ open, onOpenChange, onApiKeySaved }: Se
       }
     };
 
-    const fetchLanguage = async () => {
-      try {
-        const language = await accomplish.getLanguage();
-        setCurrentLanguage(language);
-      } catch (err) {
-        console.error('Failed to fetch language:', err);
-      }
-    };
-
     fetchKeys();
     fetchDebugSetting();
     fetchVersion();
-    fetchLanguage();
   }, [open]);
 
   const handleDebugToggle = async () => {
@@ -114,17 +99,6 @@ export default function SettingsDialog({ open, onOpenChange, onApiKeySaved }: Se
     } catch (err) {
       console.error('Failed to save debug setting:', err);
       setDebugMode(!newValue);
-    }
-  };
-
-  const handleLanguageChange = async (language: string) => {
-    const accomplish = getAccomplish();
-    try {
-      await accomplish.setLanguage(language);
-      setCurrentLanguage(language);
-      i18n.changeLanguage(language);
-    } catch (err) {
-      console.error('Failed to save language setting:', err);
     }
   };
 
@@ -159,7 +133,7 @@ export default function SettingsDialog({ open, onOpenChange, onApiKeySaved }: Se
   };
 
   const handleModelDone = (modelName: string) => {
-    setCompletionMessage(t('settings.wizard.modelSetTo', 'Model set to {{model}}', { model: modelName }));
+    setCompletionMessage(`Model set to ${modelName}`);
     // Close dialog after brief delay
     setTimeout(() => {
       onOpenChange(false);
@@ -227,7 +201,7 @@ export default function SettingsDialog({ open, onOpenChange, onApiKeySaved }: Se
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{t('settings.title')}</DialogTitle>
+          <DialogTitle>Settings</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-8 mt-4">
@@ -247,36 +221,16 @@ export default function SettingsDialog({ open, onOpenChange, onApiKeySaved }: Se
             }}
           />
 
-          {/* Language Selection Section */}
-          <section>
-            <h2 className="mb-4 text-base font-medium text-foreground flex items-center gap-2">
-              <Globe className="h-4 w-4" />
-              {t('settings.language.title')}
-            </h2>
-            <div className="rounded-lg border border-border bg-card p-5">
-              <p className="mb-4 text-sm text-muted-foreground leading-relaxed">
-                {t('settings.language.description')}
-              </p>
-              <select
-                value={currentLanguage}
-                onChange={(e) => handleLanguageChange(e.target.value)}
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-              >
-                <option value="en">English</option>
-                <option value="ja">日本語</option>
-              </select>
-            </div>
-          </section>
-
           {/* Developer Section */}
           <section>
-            <h2 className="mb-4 text-base font-medium text-foreground">{t('settings.developer.title', 'Developer')}</h2>
+            <h2 className="mb-4 text-base font-medium text-foreground">Developer</h2>
             <div className="rounded-lg border border-border bg-card p-5">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
-                  <div className="font-medium text-foreground">{t('settings.debug.title')}</div>
+                  <div className="font-medium text-foreground">Debug Mode</div>
                   <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">
-                    {t('settings.debug.description')}
+                    Show detailed backend logs including Claude CLI commands, flags,
+                    and stdout/stderr output in the task view.
                   </p>
                 </div>
                 <div className="ml-4">
@@ -311,7 +265,7 @@ export default function SettingsDialog({ open, onOpenChange, onApiKeySaved }: Se
 
           {/* About Section */}
           <section>
-            <h2 className="mb-4 text-base font-medium text-foreground">{t('settings.about.title')}</h2>
+            <h2 className="mb-4 text-base font-medium text-foreground">About</h2>
             <div className="rounded-lg border border-border bg-card p-5">
               <div className="flex items-center gap-4">
                 <img src={logoImage} alt="Openwork" className="h-12 w-12 rounded-xl" />

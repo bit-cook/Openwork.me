@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { ChevronLeft } from 'lucide-react';
 import { getAccomplish } from '@/lib/accomplish';
 import { analytics } from '@/lib/analytics';
@@ -14,7 +13,6 @@ interface AddApiKeyProps {
 }
 
 export default function AddApiKey({ providerId, onSuccess, onBack }: AddApiKeyProps) {
-  const { t } = useTranslation();
   const [apiKey, setApiKey] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -25,12 +23,12 @@ export default function AddApiKey({ providerId, onSuccess, onBack }: AddApiKeyPr
     const trimmedKey = apiKey.trim();
 
     if (!trimmedKey) {
-      setError(t('settings.apiKey.error', 'Please enter an API key.'));
+      setError('Please enter an API key.');
       return;
     }
 
     if (!trimmedKey.startsWith(provider.prefix)) {
-      setError(t('settings.apiKey.invalidFormat', `Invalid API key format. Key should start with ${provider.prefix}`));
+      setError(`Invalid API key format. Key should start with ${provider.prefix}`);
       return;
     }
 
@@ -60,7 +58,7 @@ export default function AddApiKey({ providerId, onSuccess, onBack }: AddApiKeyPr
   return (
     <div className="space-y-4">
       <h2 className="text-lg font-medium text-foreground">
-        {t('settings.wizard.addApiKeyFor', 'Add your {{provider}} API key', { provider: provider.name })}
+        Add your {provider.name} API key
       </h2>
       <div>
         <input
@@ -79,7 +77,7 @@ export default function AddApiKey({ providerId, onSuccess, onBack }: AddApiKeyPr
           className="flex items-center gap-1 rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
         >
           <ChevronLeft className="h-4 w-4" />
-          {t('settings.wizard.back', 'Back')}
+          Back
         </button>
         <button
           type="button"
@@ -87,7 +85,7 @@ export default function AddApiKey({ providerId, onSuccess, onBack }: AddApiKeyPr
           disabled={isSaving}
           className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
         >
-          {isSaving ? t('settings.apiKey.saving', 'Saving...') : t('settings.wizard.validateAndNext', 'Validate & Next')}
+          {isSaving ? 'Saving...' : 'Validate & Next'}
         </button>
       </div>
     </div>
