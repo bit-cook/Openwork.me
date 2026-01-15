@@ -63,7 +63,7 @@ import {
 } from './validation';
 
 const MAX_TEXT_LENGTH = 8000;
-const ALLOWED_API_KEY_PROVIDERS = new Set(['anthropic', 'openai', 'google', 'groq', 'custom']);
+const ALLOWED_API_KEY_PROVIDERS = new Set(['anthropic', 'openai', 'google', 'xai', 'custom']);
 const API_KEY_VALIDATION_TIMEOUT_MS = 15000;
 
 /**
@@ -781,9 +781,9 @@ export function registerIPCHandlers(): void {
           );
           break;
 
-        case 'groq':
+        case 'xai':
           response = await fetchWithTimeout(
-            'https://api.groq.com/openai/v1/models',
+            'https://api.x.ai/v1/models',
             {
               method: 'GET',
               headers: {
