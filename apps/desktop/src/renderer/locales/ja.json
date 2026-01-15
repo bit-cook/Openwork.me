@@ -73,6 +73,22 @@
     },
     "about": {
       "title": "このアプリについて"
+    },
+    "wizard": {
+      "chooseModel": "モデルを選択",
+      "cloud": "クラウド",
+      "cloudDescription": "クラウドプロバイダーのAIモデルを使用",
+      "local": "ローカル",
+      "localDescription": "お使いのマシンでOllamaを使用",
+      "selectProvider": "プロバイダーを選択",
+      "addApiKey": "APIキーを追加",
+      "addApiKeyFor": "{{provider}}のAPIキーを追加",
+      "selectModel": "モデルを選択",
+      "back": "戻る",
+      "next": "次へ",
+      "done": "完了",
+      "validateAndNext": "検証して次へ",
+      "modelSetTo": "モデルを{{model}}に設定しました"
     }
   },
   "execution": {

@@ -73,6 +73,22 @@
     },
     "about": {
       "title": "About"
+    },
+    "wizard": {
+      "chooseModel": "Choose Model",
+      "cloud": "Cloud",
+      "cloudDescription": "Use AI models from cloud providers",
+      "local": "Local",
+      "localDescription": "Use Ollama on your machine",
+      "selectProvider": "Select Provider",
+      "addApiKey": "Add API Key",
+      "addApiKeyFor": "Add your {{provider}} API key",
+      "selectModel": "Select Model",
+      "back": "Back",
+      "next": "Next",
+      "done": "Done",
+      "validateAndNext": "Validate & Next",
+      "modelSetTo": "Model set to {{model}}"
     }
   },
   "execution": {
