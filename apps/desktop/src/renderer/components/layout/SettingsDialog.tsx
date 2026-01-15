@@ -155,13 +155,13 @@ export default function SettingsDialog({ open, onOpenChange, onApiKeySaved }: Se
     const accomplish = getAccomplish();
     const model = await accomplish.getSelectedModel();
     setCurrentModel(model);
-    // Reset wizard after showing success message (2s)
+    // Reset wizard after showing success message (1.5s)
     setTimeout(() => {
       setCompletionMessage(null);
       setWizardStep('choose-type');
       setSelectedModelType(null);
       setSelectedProvider(null);
-    }, 2000);
+    }, 1500);
   };
 
   const handleBack = () => {
