@@ -1,6 +1,6 @@
 import { useState, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, ChevronDown, CheckCircle2, FileText, Search, Terminal, Brain, Globe } from 'lucide-react';
+import { ChevronRight, ChevronDown, CheckCircle2, FileText, Search, SquareTerminal, Brain, Globe, Wrench } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { springs } from '../../lib/animations';
 import loadingSymbol from '/assets/loading-symbol.svg';
@@ -31,7 +31,7 @@ const TOOL_ICONS: Record<string, typeof FileText> = {
   Edit: FileText,
   Glob: Search,
   Grep: Search,
-  Bash: Terminal,
+  Bash: SquareTerminal,
   Task: Brain,
   WebFetch: Globe,
   WebSearch: Globe,
@@ -177,7 +177,7 @@ export const ActivityRow = memo(function ActivityRow({
 
   // Normalize tool name for consistent matching (handles bash -> Bash, etc.)
   const normalizedTool = normalizeToolName(tool);
-  const Icon = TOOL_ICONS[normalizedTool] || Terminal;
+  const Icon = TOOL_ICONS[normalizedTool] || Wrench;
   const summary = getSummary(normalizedTool, input);
   const details = formatInput(normalizedTool, input);
 
