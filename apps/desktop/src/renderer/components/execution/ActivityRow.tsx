@@ -69,6 +69,87 @@ function formatJson(obj: unknown): string {
   }
 }
 
+// Generate smart summary based on tool and input
+function getSummary(tool: string, input: unknown, fallbackName: string): string {
+  const inp = input as Record<string, unknown>;
+
+  switch (tool) {
+    case 'Read': {
+      const filePath = inp?.file_path as string;
+      if (filePath) {
+        const basename = filePath.split('/').pop() || filePath;
+        return `Read ${basename}`;
+      }
+      return 'Read File';
+    }
+
+    case 'Write': {
+      const filePath = inp?.file_path as string;
+      if (filePath) {
+        const basename = filePath.split('/').pop() || filePath;
+        return `Write ${basename}`;
+      }
+      return 'Write File';
+    }
+
+    case 'Edit': {
+      const filePath = inp?.file_path as string;
+      if (filePath) {
+        const basename = filePath.split('/').pop() || filePath;
+        return `Edit ${basename}`;
+      }
+      return 'Edit File';
+    }
+
+    case 'Glob': {
+      const pattern = inp?.pattern as string;
+      return pattern ? `Find ${pattern}` : 'Find Files';
+    }
+
+    case 'Grep': {
+      const pattern = inp?.pattern as string;
+      return pattern ? `Search for "${pattern}"` : 'Search Code';
+    }
+
+    case 'WebFetch': {
+      const url = inp?.url as string;
+      if (url) {
+        try {
+          const hostname = new URL(url).hostname;
+          return `Fetch ${hostname}`;
+        } catch {
+          return 'Fetch URL';
+        }
+      }
+      return 'Fetch URL';
+    }
+
+    case 'WebSearch': {
+      const query = inp?.query as string;
+      return query ? `Search "${query}"` : 'Web Search';
+    }
+
+    case 'Bash': {
+      const description = inp?.description as string;
+      if (description) return description;
+      const command = inp?.command as string;
+      if (command) {
+        const shortCmd = command.length > 50 ? command.slice(0, 50) + '...' : command;
+        return shortCmd;
+      }
+      return 'Run Command';
+    }
+
+    case 'Task': {
+      const description = inp?.description as string;
+      return description || 'Agent Task';
+    }
+
+    default:
+      return fallbackName;
+  }
+}
+
 // Spinning icon component
 const SpinningIcon = ({ className }: { className?: string }) => (
   <img
@@ -89,7 +170,8 @@ export const ActivityRow = memo(function ActivityRow({
 
   const normalizedTool = normalizeToolName(tool);
   const Icon = TOOL_ICONS[normalizedTool] || Wrench;
-  const displayName = TOOL_DISPLAY_NAMES[normalizedTool] || normalizedTool;
+  const fallbackName = TOOL_DISPLAY_NAMES[normalizedTool] || normalizedTool;
+  const summary = getSummary(normalizedTool, input, fallbackName);
   const formattedInput = formatJson(input);
   const formattedOutput = output || '';
 
@@ -115,8 +197,8 @@ export const ActivityRow = memo(function ActivityRow({
         {/* Tool icon */}
         <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />
 
-        {/* Tool name */}
-        <span className="flex-1 font-medium text-foreground">{displayName}</span>
+        {/* Tool summary */}
+        <span className="flex-1 font-medium text-foreground truncate">{summary}</span>
 
         {/* Status indicator */}
         {status === 'running' ? (
