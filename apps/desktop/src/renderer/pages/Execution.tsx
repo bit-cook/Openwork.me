@@ -493,9 +493,20 @@ export default function ExecutionPage() {
             })}
 
             <AnimatePresence>
-              {currentTask.status === 'running' && !permissionRequest && !currentTool && (
-                <ThinkingRow />
-              )}
+              {(() => {
+                // Only show thinking if:
+                // 1. Task is running
+                // 2. No permission request pending
+                // 3. No tool currently active
+                // 4. Last message is NOT an assistant message (agent hasn't just spoken)
+                const lastMessage = currentTask.messages[currentTask.messages.length - 1];
+                const lastMessageIsAssistant = lastMessage?.type === 'assistant';
+                const showThinking = currentTask.status === 'running' &&
+                  !permissionRequest &&
+                  !currentTool &&
+                  !lastMessageIsAssistant;
+                return showThinking ? <ThinkingRow /> : null;
+              })()}
             </AnimatePresence>
 
             <div ref={messagesEndRef} />
