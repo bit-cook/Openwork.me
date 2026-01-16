@@ -10,7 +10,7 @@ import type { TaskMessage } from '@accomplish/shared';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
-import { XCircle, CornerDownLeft, ArrowLeft, CheckCircle2, AlertCircle, Terminal, Wrench, FileText, Search, Code, Brain, Clock, Square, Play, Download, File, Bug, ChevronUp, ChevronDown, Trash2, Copy, Check } from 'lucide-react';
+import { XCircle, CornerDownLeft, ArrowLeft, CheckCircle2, AlertCircle, Terminal, Wrench, FileText, Search, Code, Brain, Clock, Square, Play, Download, File, Bug, ChevronUp, ChevronDown, Trash2, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import ReactMarkdown from 'react-markdown';
 import { StreamingText } from '../components/ui/streaming-text';
@@ -86,7 +86,7 @@ export default function ExecutionPage() {
   const [debugLogs, setDebugLogs] = useState<DebugLogEntry[]>([]);
   const [debugPanelOpen, setDebugPanelOpen] = useState(false);
   const [debugModeEnabled, setDebugModeEnabled] = useState(false);
-  const [debugCopied, setDebugCopied] = useState(false);
+  const [debugExported, setDebugExported] = useState(false);
   const debugPanelRef = useRef<HTMLDivElement>(null);
 
   const {
@@ -241,7 +241,7 @@ export default function ExecutionPage() {
     await sendFollowUp('continue');
   };
 
-  const handleCopyDebugLogs = useCallback(() => {
+  const handleExportDebugLogs = useCallback(() => {
     const text = debugLogs
       .map((log) => {
         const dataStr = log.data !== undefined
@@ -250,10 +250,20 @@ export default function ExecutionPage() {
         return `${new Date(log.timestamp).toISOString()} [${log.type}] ${log.message}${dataStr}`;
       })
       .join('\n');
-    navigator.clipboard.writeText(text);
-    setDebugCopied(true);
-    setTimeout(() => setDebugCopied(false), 2000);
-  }, [debugLogs]);
+
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `debug-logs-${id}-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    setDebugExported(true);
+    setTimeout(() => setDebugExported(false), 2000);
+  }, [debugLogs, id]);
 
   const handlePermissionResponse = async (allowed: boolean) => {
     if (!permissionRequest || !currentTask) return;
@@ -781,15 +791,15 @@ export default function ExecutionPage() {
                     className="h-6 px-2 text-xs text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700"
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleCopyDebugLogs();
+                      handleExportDebugLogs();
                     }}
                   >
-                    {debugCopied ? (
+                    {debugExported ? (
                       <Check className="h-3 w-3 mr-1 text-green-400" />
                     ) : (
-                      <Copy className="h-3 w-3 mr-1" />
+                      <Download className="h-3 w-3 mr-1" />
                     )}
-                    {debugCopied ? 'Copied' : 'Copy'}
+                    {debugExported ? 'Exported' : 'Export'}
                   </Button>
                   <Button
                     variant="ghost"
