@@ -5,6 +5,25 @@ import { cn } from '@/lib/utils';
 import { springs } from '../../lib/animations';
 import loadingSymbol from '/assets/loading-symbol.svg';
 
+// Normalize tool name to PascalCase for consistent matching
+function normalizeToolName(tool: string): string {
+  if (!tool) return tool;
+  // Handle common variations: bash -> Bash, webfetch -> WebFetch
+  const lowerTool = tool.toLowerCase();
+  const toolMap: Record<string, string> = {
+    read: 'Read',
+    write: 'Write',
+    edit: 'Edit',
+    glob: 'Glob',
+    grep: 'Grep',
+    bash: 'Bash',
+    task: 'Task',
+    webfetch: 'WebFetch',
+    websearch: 'WebSearch',
+  };
+  return toolMap[lowerTool] || tool.charAt(0).toUpperCase() + tool.slice(1);
+}
+
 // Tool icon mapping
 const TOOL_ICONS: Record<string, typeof FileText> = {
   Read: FileText,
@@ -156,9 +175,11 @@ export const ActivityRow = memo(function ActivityRow({
 }: ActivityRowProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const Icon = TOOL_ICONS[tool] || Terminal;
-  const summary = getSummary(tool, input);
-  const details = formatInput(tool, input);
+  // Normalize tool name for consistent matching (handles bash -> Bash, etc.)
+  const normalizedTool = normalizeToolName(tool);
+  const Icon = TOOL_ICONS[normalizedTool] || Terminal;
+  const summary = getSummary(normalizedTool, input);
+  const details = formatInput(normalizedTool, input);
 
   return (
     <motion.div
