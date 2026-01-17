@@ -26,6 +26,8 @@ const API_KEY_PROVIDERS = [
   { id: 'openai', name: 'OpenAI', prefix: 'sk-', placeholder: 'sk-...' },
   { id: 'google', name: 'Google AI', prefix: 'AIza', placeholder: 'AIza...' },
   { id: 'xai', name: 'xAI (Grok)', prefix: 'xai-', placeholder: 'xai-...' },
+  { id: 'deepseek', name: 'DeepSeek', prefix: 'sk-', placeholder: 'sk-...' },
+  { id: 'zai', name: 'Z.AI Coding Plan', prefix: '', placeholder: 'Your Z.AI API key...' },
   { id: 'bedrock', name: 'Amazon Bedrock', prefix: '', placeholder: '' },
 ] as const;
 
@@ -199,7 +201,8 @@ export default function SettingsDialog({ open, onOpenChange, onApiKeySaved }: Se
       return;
     }
 
-    if (!trimmedKey.startsWith(currentProvider.prefix)) {
+    // Only validate prefix if the provider has a defined prefix
+    if (currentProvider.prefix && !trimmedKey.startsWith(currentProvider.prefix)) {
       setError(`Invalid API key format. Key should start with ${currentProvider.prefix}`);
       return;
     }
@@ -374,21 +377,19 @@ export default function SettingsDialog({ open, onOpenChange, onApiKeySaved }: Se
               <div className="flex gap-2 mb-5">
                 <button
                   onClick={() => setActiveTab('cloud')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    activeTab === 'cloud'
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeTab === 'cloud'
                       ? 'bg-primary text-primary-foreground'
                       : 'bg-muted text-muted-foreground hover:text-foreground'
-                  }`}
+                    }`}
                 >
                   Cloud Providers
                 </button>
                 <button
                   onClick={() => setActiveTab('local')}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    activeTab === 'local'
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeTab === 'local'
                       ? 'bg-primary text-primary-foreground'
                       : 'bg-muted text-muted-foreground hover:text-foreground'
-                  }`}
+                    }`}
                 >
                   Local Models
                 </button>
@@ -555,235 +556,232 @@ export default function SettingsDialog({ open, onOpenChange, onApiKeySaved }: Se
           {activeTab === 'cloud' && (
             <section>
               <h2 className="mb-4 text-base font-medium text-foreground">Bring Your Own Model/API Key</h2>
-            <div className="rounded-lg border border-border bg-card p-5">
-              <p className="mb-5 text-sm text-muted-foreground leading-relaxed">
-                Setup the API key and model for your own AI coworker.
-              </p>
+              <div className="rounded-lg border border-border bg-card p-5">
+                <p className="mb-5 text-sm text-muted-foreground leading-relaxed">
+                  Setup the API key and model for your own AI coworker.
+                </p>
 
-              {/* Provider Selection */}
-              <div className="mb-5">
-                <label className="mb-2.5 block text-sm font-medium text-foreground">
-                  Provider
-                </label>
-                <div className="grid grid-cols-2 gap-3">
-                  {API_KEY_PROVIDERS.map((p) => (
-                    <button
-                      key={p.id}
-                      onClick={() => {
-                        analytics.trackSelectProvider(p.name);
-                        setProvider(p.id);
-                      }}
-                      className={`rounded-xl border p-4 text-center transition-all duration-200 ease-accomplish ${
-                        provider === p.id
-                          ? 'border-primary bg-muted'
-                          : 'border-border hover:border-ring'
-                      }`}
-                    >
-                      <div className="font-medium text-foreground">{p.name}</div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Bedrock Credentials Form */}
-              {provider === 'bedrock' && (
+                {/* Provider Selection */}
                 <div className="mb-5">
-                  {/* Auth Type Tabs */}
-                  <div className="flex gap-2 mb-4">
-                    <button
-                      onClick={() => setBedrockAuthTab('accessKeys')}
-                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                        bedrockAuthTab === 'accessKeys'
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-muted text-muted-foreground hover:text-foreground'
-                      }`}
-                    >
-                      Access Keys
-                    </button>
-                    <button
-                      onClick={() => setBedrockAuthTab('profile')}
-                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                        bedrockAuthTab === 'profile'
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-muted text-muted-foreground hover:text-foreground'
-                      }`}
-                    >
-                      AWS Profile
-                    </button>
+                  <label className="mb-2.5 block text-sm font-medium text-foreground">
+                    Provider
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    {API_KEY_PROVIDERS.map((p) => (
+                      <button
+                        key={p.id}
+                        onClick={() => {
+                          analytics.trackSelectProvider(p.name);
+                          setProvider(p.id);
+                        }}
+                        className={`rounded-xl border p-4 text-center transition-all duration-200 ease-accomplish ${provider === p.id
+                            ? 'border-primary bg-muted'
+                            : 'border-border hover:border-ring'
+                          }`}
+                      >
+                        <div className="font-medium text-foreground">{p.name}</div>
+                      </button>
+                    ))}
                   </div>
+                </div>
 
-                  {bedrockAuthTab === 'accessKeys' ? (
-                    <>
+                {/* Bedrock Credentials Form */}
+                {provider === 'bedrock' && (
+                  <div className="mb-5">
+                    {/* Auth Type Tabs */}
+                    <div className="flex gap-2 mb-4">
+                      <button
+                        onClick={() => setBedrockAuthTab('accessKeys')}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${bedrockAuthTab === 'accessKeys'
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-muted text-muted-foreground hover:text-foreground'
+                          }`}
+                      >
+                        Access Keys
+                      </button>
+                      <button
+                        onClick={() => setBedrockAuthTab('profile')}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${bedrockAuthTab === 'profile'
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-muted text-muted-foreground hover:text-foreground'
+                          }`}
+                      >
+                        AWS Profile
+                      </button>
+                    </div>
+
+                    {bedrockAuthTab === 'accessKeys' ? (
+                      <>
+                        <div className="mb-4">
+                          <label className="mb-2.5 block text-sm font-medium text-foreground">
+                            Access Key ID
+                          </label>
+                          <input
+                            data-testid="bedrock-access-key-input"
+                            type="text"
+                            value={bedrockAccessKeyId}
+                            onChange={(e) => setBedrockAccessKeyId(e.target.value)}
+                            placeholder="AKIA..."
+                            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                          />
+                        </div>
+                        <div className="mb-4">
+                          <label className="mb-2.5 block text-sm font-medium text-foreground">
+                            Secret Access Key
+                          </label>
+                          <input
+                            data-testid="bedrock-secret-key-input"
+                            type="password"
+                            value={bedrockSecretKey}
+                            onChange={(e) => setBedrockSecretKey(e.target.value)}
+                            placeholder="Enter your secret access key"
+                            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                          />
+                        </div>
+                      </>
+                    ) : (
                       <div className="mb-4">
                         <label className="mb-2.5 block text-sm font-medium text-foreground">
-                          Access Key ID
+                          Profile Name
                         </label>
                         <input
-                          data-testid="bedrock-access-key-input"
+                          data-testid="bedrock-profile-input"
                           type="text"
-                          value={bedrockAccessKeyId}
-                          onChange={(e) => setBedrockAccessKeyId(e.target.value)}
-                          placeholder="AKIA..."
+                          value={bedrockProfileName}
+                          onChange={(e) => setBedrockProfileName(e.target.value)}
+                          placeholder="default"
                           className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                         />
                       </div>
-                      <div className="mb-4">
-                        <label className="mb-2.5 block text-sm font-medium text-foreground">
-                          Secret Access Key
-                        </label>
-                        <input
-                          data-testid="bedrock-secret-key-input"
-                          type="password"
-                          value={bedrockSecretKey}
-                          onChange={(e) => setBedrockSecretKey(e.target.value)}
-                          placeholder="Enter your secret access key"
-                          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                        />
-                      </div>
-                    </>
-                  ) : (
+                    )}
+
                     <div className="mb-4">
                       <label className="mb-2.5 block text-sm font-medium text-foreground">
-                        Profile Name
+                        Region
                       </label>
                       <input
-                        data-testid="bedrock-profile-input"
+                        data-testid="bedrock-region-input"
                         type="text"
-                        value={bedrockProfileName}
-                        onChange={(e) => setBedrockProfileName(e.target.value)}
-                        placeholder="default"
+                        value={bedrockRegion}
+                        onChange={(e) => setBedrockRegion(e.target.value)}
+                        placeholder="us-east-1"
                         className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                       />
                     </div>
-                  )}
 
-                  <div className="mb-4">
+                    {bedrockError && <p className="mb-4 text-sm text-destructive">{bedrockError}</p>}
+                    {bedrockStatus && <p className="mb-4 text-sm text-success">{bedrockStatus}</p>}
+
+                    <button
+                      data-testid="bedrock-save-button"
+                      className="w-full rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                      onClick={handleSaveBedrockCredentials}
+                      disabled={savingBedrock}
+                    >
+                      {savingBedrock ? 'Validating...' : 'Save Bedrock Credentials'}
+                    </button>
+                  </div>
+                )}
+
+                {/* API Key Input - hide for Bedrock */}
+                {provider !== 'bedrock' && (
+                  <div className="mb-5">
                     <label className="mb-2.5 block text-sm font-medium text-foreground">
-                      Region
+                      {API_KEY_PROVIDERS.find((p) => p.id === provider)?.name} API Key
                     </label>
                     <input
-                      data-testid="bedrock-region-input"
-                      type="text"
-                      value={bedrockRegion}
-                      onChange={(e) => setBedrockRegion(e.target.value)}
-                      placeholder="us-east-1"
+                      data-testid="settings-api-key-input"
+                      type="password"
+                      value={apiKey}
+                      onChange={(e) => setApiKey(e.target.value)}
+                      placeholder={API_KEY_PROVIDERS.find((p) => p.id === provider)?.placeholder}
                       className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                     />
                   </div>
+                )}
 
-                  {bedrockError && <p className="mb-4 text-sm text-destructive">{bedrockError}</p>}
-                  {bedrockStatus && <p className="mb-4 text-sm text-success">{bedrockStatus}</p>}
+                {provider !== 'bedrock' && error && <p className="mb-4 text-sm text-destructive">{error}</p>}
+                {provider !== 'bedrock' && statusMessage && (
+                  <p className="mb-4 text-sm text-success">{statusMessage}</p>
+                )}
 
+                {provider !== 'bedrock' && (
                   <button
-                    data-testid="bedrock-save-button"
                     className="w-full rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-                    onClick={handleSaveBedrockCredentials}
-                    disabled={savingBedrock}
+                    onClick={handleSaveApiKey}
+                    disabled={isSaving}
                   >
-                    {savingBedrock ? 'Validating...' : 'Save Bedrock Credentials'}
+                    {isSaving ? 'Saving...' : 'Save API Key'}
                   </button>
-                </div>
-              )}
+                )}
 
-              {/* API Key Input - hide for Bedrock */}
-              {provider !== 'bedrock' && (
-                <div className="mb-5">
-                  <label className="mb-2.5 block text-sm font-medium text-foreground">
-                    {API_KEY_PROVIDERS.find((p) => p.id === provider)?.name} API Key
-                  </label>
-                  <input
-                    data-testid="settings-api-key-input"
-                    type="password"
-                    value={apiKey}
-                    onChange={(e) => setApiKey(e.target.value)}
-                    placeholder={API_KEY_PROVIDERS.find((p) => p.id === provider)?.placeholder}
-                    className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                  />
-                </div>
-              )}
-
-              {provider !== 'bedrock' && error && <p className="mb-4 text-sm text-destructive">{error}</p>}
-              {provider !== 'bedrock' && statusMessage && (
-                <p className="mb-4 text-sm text-success">{statusMessage}</p>
-              )}
-
-              {provider !== 'bedrock' && (
-                <button
-                  className="w-full rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-                  onClick={handleSaveApiKey}
-                  disabled={isSaving}
-                >
-                  {isSaving ? 'Saving...' : 'Save API Key'}
-                </button>
-              )}
-
-              {/* Saved Keys */}
-              {loadingKeys ? (
-                <div className="mt-6 animate-pulse">
-                  <div className="h-4 w-24 rounded bg-muted mb-3" />
-                  <div className="h-14 rounded-xl bg-muted" />
-                </div>
-              ) : savedKeys.length > 0 && (
-                <div className="mt-6">
-                  <h3 className="mb-3 text-sm font-medium text-foreground">Saved Keys</h3>
-                  <div className="space-y-2">
-                    {savedKeys.map((key) => {
-                      const providerConfig = API_KEY_PROVIDERS.find((p) => p.id === key.provider);
-                      return (
-                        <div
-                          key={key.id}
-                          className="flex items-center justify-between rounded-xl border border-border bg-muted p-3.5"
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
-                              <span className="text-xs font-bold text-primary">
-                                {providerConfig?.name.charAt(0) || key.provider.charAt(0).toUpperCase()}
-                              </span>
-                            </div>
-                            <div>
-                              <div className="text-sm font-medium text-foreground">
-                                {providerConfig?.name || key.provider}
-                              </div>
-                              <div className="text-xs text-muted-foreground font-mono">
-                                {key.keyPrefix}
-                              </div>
-                            </div>
-                          </div>
-                          {keyToDelete === key.id ? (
-                            <div className="flex items-center gap-2">
-                              <span className="text-xs text-muted-foreground">Are you sure?</span>
-                              <button
-                                onClick={() => {
-                                  handleDeleteApiKey(key.id, key.provider);
-                                  setKeyToDelete(null);
-                                }}
-                                className="rounded px-2 py-1 text-xs font-medium bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors"
-                              >
-                                Yes
-                              </button>
-                              <button
-                                onClick={() => setKeyToDelete(null)}
-                                className="rounded px-2 py-1 text-xs font-medium bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
-                              >
-                                No
-                              </button>
-                            </div>
-                          ) : (
-                            <button
-                              onClick={() => setKeyToDelete(key.id)}
-                              className="rounded-lg p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors duration-200 ease-accomplish"
-                              title="Remove API key"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
-                          )}
-                        </div>
-                      );
-                    })}
+                {/* Saved Keys */}
+                {loadingKeys ? (
+                  <div className="mt-6 animate-pulse">
+                    <div className="h-4 w-24 rounded bg-muted mb-3" />
+                    <div className="h-14 rounded-xl bg-muted" />
                   </div>
-                </div>
-              )}
-            </div>
+                ) : savedKeys.length > 0 && (
+                  <div className="mt-6">
+                    <h3 className="mb-3 text-sm font-medium text-foreground">Saved Keys</h3>
+                    <div className="space-y-2">
+                      {savedKeys.map((key) => {
+                        const providerConfig = API_KEY_PROVIDERS.find((p) => p.id === key.provider);
+                        return (
+                          <div
+                            key={key.id}
+                            className="flex items-center justify-between rounded-xl border border-border bg-muted p-3.5"
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+                                <span className="text-xs font-bold text-primary">
+                                  {providerConfig?.name.charAt(0) || key.provider.charAt(0).toUpperCase()}
+                                </span>
+                              </div>
+                              <div>
+                                <div className="text-sm font-medium text-foreground">
+                                  {providerConfig?.name || key.provider}
+                                </div>
+                                <div className="text-xs text-muted-foreground font-mono">
+                                  {key.keyPrefix}
+                                </div>
+                              </div>
+                            </div>
+                            {keyToDelete === key.id ? (
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs text-muted-foreground">Are you sure?</span>
+                                <button
+                                  onClick={() => {
+                                    handleDeleteApiKey(key.id, key.provider);
+                                    setKeyToDelete(null);
+                                  }}
+                                  className="rounded px-2 py-1 text-xs font-medium bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors"
+                                >
+                                  Yes
+                                </button>
+                                <button
+                                  onClick={() => setKeyToDelete(null)}
+                                  className="rounded px-2 py-1 text-xs font-medium bg-muted text-muted-foreground hover:bg-muted/80 transition-colors"
+                                >
+                                  No
+                                </button>
+                              </div>
+                            ) : (
+                              <button
+                                onClick={() => setKeyToDelete(key.id)}
+                                className="rounded-lg p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors duration-200 ease-accomplish"
+                                title="Remove API key"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
             </section>
           )}
 
@@ -806,14 +804,12 @@ export default function SettingsDialog({ open, onOpenChange, onApiKeySaved }: Se
                     <button
                       data-testid="settings-debug-toggle"
                       onClick={handleDebugToggle}
-                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ease-accomplish ${
-                        debugMode ? 'bg-primary' : 'bg-muted'
-                      }`}
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ease-accomplish ${debugMode ? 'bg-primary' : 'bg-muted'
+                        }`}
                     >
                       <span
-                        className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform duration-200 ease-accomplish ${
-                          debugMode ? 'translate-x-6' : 'translate-x-1'
-                        }`}
+                        className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform duration-200 ease-accomplish ${debugMode ? 'translate-x-6' : 'translate-x-1'
+                          }`}
                       />
                     </button>
                   )}
@@ -846,10 +842,10 @@ export default function SettingsDialog({ open, onOpenChange, onApiKeySaved }: Se
                 </div>
               </div>
               <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
-              Openwork is a local computer-use AI agent for your Mac that reads your files, creates documents, and automates repetitive knowledge work—all open-source with your AI models of choice.
+                Openwork is a local computer-use AI agent for your Mac that reads your files, creates documents, and automates repetitive knowledge work—all open-source with your AI models of choice.
               </p>
               <p className="mt-3 text-sm text-muted-foreground">
-              Any questions or feedback? <a href="mailto:openwork-support@accomplish.ai" className="text-primary hover:underline">Click here to contact us</a>.
+                Any questions or feedback? <a href="mailto:openwork-support@accomplish.ai" className="text-primary hover:underline">Click here to contact us</a>.
               </p>
             </div>
           </section>

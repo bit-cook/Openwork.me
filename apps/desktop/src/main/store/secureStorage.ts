@@ -184,22 +184,24 @@ export function deleteApiKey(provider: string): boolean {
 /**
  * Supported API key providers
  */
-export type ApiKeyProvider = 'anthropic' | 'openai' | 'google' | 'xai' | 'custom' | 'bedrock';
+export type ApiKeyProvider = 'anthropic' | 'openai' | 'google' | 'xai' | 'deepseek' | 'zai' | 'custom' | 'bedrock';
 
 /**
  * Get all API keys for all providers
  */
 export async function getAllApiKeys(): Promise<Record<ApiKeyProvider, string | null>> {
-  const [anthropic, openai, google, xai, custom, bedrock] = await Promise.all([
+  const [anthropic, openai, google, xai, deepseek, zai, custom, bedrock] = await Promise.all([
     getApiKey('anthropic'),
     getApiKey('openai'),
     getApiKey('google'),
     getApiKey('xai'),
+    getApiKey('deepseek'),
+    getApiKey('zai'),
     getApiKey('custom'),
     getApiKey('bedrock'),
   ]);
 
-  return { anthropic, openai, google, xai, custom, bedrock };
+  return { anthropic, openai, google, xai, deepseek, zai, custom, bedrock };
 }
 
 /**

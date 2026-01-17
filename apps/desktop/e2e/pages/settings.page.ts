@@ -97,6 +97,29 @@ export class SettingsPage {
     await this.addApiKeyButton.click();
   }
 
+  /**
+   * Get a provider button by its name
+   */
+  getProviderButton(providerName: string) {
+    return this.page.getByRole('button', { name: providerName, exact: true });
+  }
+
+  /**
+   * Select a provider by clicking its button
+   */
+  async selectProvider(providerName: string) {
+    const button = this.getProviderButton(providerName);
+    await button.click();
+  }
+
+  /**
+   * Check if a provider button is visible
+   */
+  async isProviderVisible(providerName: string) {
+    const button = this.getProviderButton(providerName);
+    return button.isVisible();
+  }
+
   async selectBedrockProvider() {
     await this.bedrockProviderButton.click();
   }
