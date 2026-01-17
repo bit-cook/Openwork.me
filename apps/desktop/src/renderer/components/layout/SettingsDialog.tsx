@@ -26,6 +26,7 @@ const API_KEY_PROVIDERS = [
   { id: 'openai', name: 'OpenAI', prefix: 'sk-', placeholder: 'sk-...' },
   { id: 'google', name: 'Google AI', prefix: 'AIza', placeholder: 'AIza...' },
   { id: 'xai', name: 'xAI (Grok)', prefix: 'xai-', placeholder: 'xai-...' },
+  { id: 'bedrock', name: 'Amazon Bedrock', prefix: '', placeholder: '' },
 ] as const;
 
 type ProviderId = typeof API_KEY_PROVIDERS[number]['id'];
@@ -53,6 +54,14 @@ export default function SettingsDialog({ open, onOpenChange, onApiKeySaved }: Se
   const [selectedOllamaModel, setSelectedOllamaModel] = useState<string>('');
   const [savingOllama, setSavingOllama] = useState(false);
   const [keyToDelete, setKeyToDelete] = useState<string | null>(null);
+  const [bedrockAuthTab, setBedrockAuthTab] = useState<'accessKeys' | 'profile'>('accessKeys');
+  const [bedrockAccessKeyId, setBedrockAccessKeyId] = useState('');
+  const [bedrockSecretKey, setBedrockSecretKey] = useState('');
+  const [bedrockProfileName, setBedrockProfileName] = useState('default');
+  const [bedrockRegion, setBedrockRegion] = useState('us-east-1');
+  const [savingBedrock, setSavingBedrock] = useState(false);
+  const [bedrockError, setBedrockError] = useState<string | null>(null);
+  const [bedrockStatus, setBedrockStatus] = useState<string | null>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -120,11 +129,30 @@ export default function SettingsDialog({ open, onOpenChange, onApiKeySaved }: Se
       }
     };
 
+    const fetchBedrockCredentials = async () => {
+      try {
+        const credentials = await accomplish.getBedrockCredentials();
+        if (credentials) {
+          setBedrockAuthTab(credentials.authType);
+          if (credentials.authType === 'accessKeys') {
+            setBedrockAccessKeyId(credentials.accessKeyId || '');
+            // Don't pre-fill secret key for security
+          } else {
+            setBedrockProfileName(credentials.profileName || 'default');
+          }
+          setBedrockRegion(credentials.region || 'us-east-1');
+        }
+      } catch (err) {
+        console.error('Failed to fetch Bedrock credentials:', err);
+      }
+    };
+
     fetchKeys();
     fetchDebugSetting();
     fetchVersion();
     fetchSelectedModel();
     fetchOllamaConfig();
+    fetchBedrockCredentials();
   }, [open]);
 
   const handleDebugToggle = async () => {
