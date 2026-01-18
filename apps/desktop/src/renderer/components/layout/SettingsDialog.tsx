@@ -427,6 +427,9 @@ export default function SettingsDialog({ open, onOpenChange, onApiKeySaved }: Se
 
       const modelName = openrouterModels.find(m => m.id === selectedOpenrouterModel)?.name || selectedOpenrouterModel;
       setModelStatusMessage(`Model updated to ${modelName}`);
+
+      // Now that model is selected, trigger the callback to close dialog and execute task
+      onApiKeySaved?.();
     } catch (err) {
       setOpenrouterError(err instanceof Error ? err.message : 'Failed to save');
     } finally {
@@ -469,9 +472,8 @@ export default function SettingsDialog({ open, onOpenChange, onApiKeySaved }: Se
 
       // Clear input and auto-fetch models
       setOpenrouterApiKey('');
-      onApiKeySaved?.();
 
-      // Auto-fetch models after saving key
+      // Auto-fetch models after saving key (user still needs to select a model)
       await handleFetchOpenRouterModels();
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to save API key.';

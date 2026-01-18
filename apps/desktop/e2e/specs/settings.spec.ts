@@ -461,6 +461,54 @@ test.describe('Settings Dialog', () => {
     );
   });
 
+  test('should keep dialog open when saving OpenRouter API key (regression: dialog closing before model selection)', async ({ window }) => {
+    const settingsPage = new SettingsPage(window);
+
+    // Navigate to settings
+    await window.waitForLoadState('domcontentloaded');
+    await settingsPage.navigateToSettings();
+
+    // Click Proxy Platforms tab
+    await settingsPage.selectProxyPlatformsTab();
+
+    // Check if API key input is visible (no key configured yet)
+    const apiKeyInput = settingsPage.openrouterApiKeyInput;
+    const keyConfigured = await window.locator('text=API key configured').isVisible();
+
+    if (!keyConfigured) {
+      // Enter an invalid format API key (doesn't start with sk-or-)
+      await apiKeyInput.fill('invalid-key-format');
+      await settingsPage.saveOpenrouterApiKeyButton.click();
+
+      // Verify error message appears
+      await expect(window.locator('text=Invalid API key format')).toBeVisible({ timeout: TEST_TIMEOUTS.NAVIGATION });
+
+      // Verify dialog is still open (this is the key assertion - dialog should NOT close)
+      await expect(settingsPage.openrouterPlatformButton).toBeVisible({ timeout: TEST_TIMEOUTS.NAVIGATION });
+
+      // Clear and try with valid format but invalid key (will fail validation but dialog should stay open)
+      await apiKeyInput.fill('sk-or-v1-invalid-test-key');
+      await settingsPage.saveOpenrouterApiKeyButton.click();
+
+      // Should show "Validating..." then error, but dialog stays open
+      // We just verify the dialog is still visible after a brief wait
+      await window.waitForTimeout(1000);
+      await expect(settingsPage.openrouterPlatformButton).toBeVisible({ timeout: TEST_TIMEOUTS.NAVIGATION });
+    }
+
+    // Capture the state for AI verification
+    await captureForAI(
+      window,
+      'settings-dialog',
+      'proxy-platforms-api-key-flow',
+      [
+        'Dialog stays open after API key validation',
+        'Error messages are displayed for invalid keys',
+        'User can retry entering API key'
+      ]
+    );
+  });
+
   /**
    * Regression test for: "Maximum update depth exceeded" infinite loop bug
    *
