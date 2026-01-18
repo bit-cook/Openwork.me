@@ -420,6 +420,53 @@ export default function SettingsDialog({ open, onOpenChange, onApiKeySaved }: Se
     }
   };
 
+  const handleSaveOpenRouterApiKey = async () => {
+    const accomplish = getAccomplish();
+    const trimmedKey = openrouterApiKey.trim();
+
+    if (!trimmedKey) {
+      setOpenrouterApiKeyError('Please enter an API key.');
+      return;
+    }
+
+    if (!trimmedKey.startsWith('sk-or-')) {
+      setOpenrouterApiKeyError('Invalid API key format. Key should start with sk-or-');
+      return;
+    }
+
+    setSavingOpenrouterApiKey(true);
+    setOpenrouterApiKeyError(null);
+
+    try {
+      // Validate the API key
+      const validation = await accomplish.validateApiKeyForProvider('openrouter', trimmedKey);
+      if (!validation.valid) {
+        setOpenrouterApiKeyError(validation.error || 'Invalid API key.');
+        setSavingOpenrouterApiKey(false);
+        return;
+      }
+
+      // Save the API key
+      const savedKey = await accomplish.addApiKey('openrouter', trimmedKey);
+      setSavedKeys((prev) => {
+        const filtered = prev.filter((k) => k.provider !== 'openrouter');
+        return [...filtered, savedKey];
+      });
+
+      // Clear input and auto-fetch models
+      setOpenrouterApiKey('');
+      onApiKeySaved?.();
+
+      // Auto-fetch models after saving key
+      await handleFetchOpenRouterModels();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to save API key.';
+      setOpenrouterApiKeyError(message);
+    } finally {
+      setSavingOpenrouterApiKey(false);
+    }
+  };
+
   // Group OpenRouter models by provider
   const groupedOpenrouterModels = openrouterModels
     .filter(m =>
