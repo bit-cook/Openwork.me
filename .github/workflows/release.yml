@@ -135,7 +135,7 @@ jobs:
   build-mac-x64:
     name: Build macOS (Intel)
     needs: version-bump
-    runs-on: macos-13
+    runs-on: macos-15-large
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
