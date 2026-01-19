@@ -52,9 +52,14 @@ export default function SettingsDialog({ open, onOpenChange, onApiKeySaved }: Se
     accomplish.getDebugMode().then(setDebugModeState);
   }, [open, refetch, accomplish]);
 
-  // Auto-expand grid if active provider is not in the first 3 visible providers
+  // Auto-select active provider and expand grid if needed when dialog opens
   useEffect(() => {
     if (!open || loading || !settings?.activeProviderId) return;
+
+    // Auto-select the active provider to show its connection details immediately
+    setSelectedProvider(settings.activeProviderId);
+
+    // Auto-expand grid if active provider is not in the first 4 visible providers
     if (!FIRST_FOUR_PROVIDERS.includes(settings.activeProviderId)) {
       setGridExpanded(true);
     }

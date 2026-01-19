@@ -75,10 +75,10 @@ export function ProviderGrid({
         </div>
       </div>
 
-      {/* Providers */}
+      {/* Providers - min-h prevents layout shift when switching between providers */}
       {expanded ? (
-        /* Expanded: show all in grid */
-        <div className="grid grid-cols-4 gap-3">
+        /* Expanded: show all in grid with min-height to prevent flickering */
+        <div className="grid grid-cols-4 gap-3 min-h-[280px]">
           {filteredProviders.map(providerId => (
             <ProviderCard
               key={providerId}
