@@ -14,6 +14,10 @@ import xaiLogo from '/assets/ai-logos/xai.svg';
 import deepseekLogo from '/assets/ai-logos/deepseek.svg';
 import zaiLogo from '/assets/ai-logos/zai.svg';
 
+// Import icons
+import connectIcon from '/assets/icons/connect.svg';
+import connectedIcon from '/assets/icons/connected.svg';
+
 const PROVIDER_LOGOS: Record<string, string> = {
   anthropic: anthropicLogo,
   openai: openaiLogo,
@@ -170,9 +174,7 @@ export function ClassicProviderForm({
                 </>
               ) : (
                 <>
-                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-                  </svg>
+                  <img src={connectIcon} alt="" className="h-4 w-4" />
                   Connect
                 </>
               )}
@@ -200,9 +202,7 @@ export function ClassicProviderForm({
                 className="flex-1 flex items-center justify-center gap-2 rounded-md bg-[#4A7C59] px-4 py-2.5 text-sm font-medium text-white"
                 disabled
               >
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
+                <img src={connectedIcon} alt="" className="h-4 w-4 brightness-0 invert" />
                 Connected
               </button>
               <button
