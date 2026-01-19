@@ -41,8 +41,26 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
   tools: [
     {
       name: 'AskUserQuestion',
-      description:
-        'Ask the user a question and wait for their response. Use this for clarifications, confirmations before sensitive actions, or when you need user input to proceed. Returns the user\'s selected option(s) or custom text response.',
+      description: `Ask the user a question via UI modal.
+
+CRITICAL: The user CANNOT see your text output or CLI prompts!
+If you write "Let me ask you..." - THE USER WILL NOT SEE IT.
+You MUST call this tool to communicate with the user.
+
+WHEN TO USE:
+- Clarifying questions before ambiguous tasks
+- Confirming destructive/irreversible actions
+- Getting user preferences or approval
+
+CUSTOM TEXT INPUT:
+Include { label: "Other", description: "Type your own" } to allow free text.
+Response will be "User responded: [text]" instead of "User selected: Other".
+
+RESPONSE FORMAT:
+- "User selected: Option A"
+- "User selected: Option A, Option B" (if multiSelect)
+- "User responded: [custom text]"
+- "User declined to answer the question."`,
       inputSchema: {
         type: 'object',
         properties: {
