@@ -22,7 +22,7 @@ Two modes available. Ask the user if unclear which to use.
 Launches a new Chromium browser for fresh automation sessions.
 
 ```bash
-./skills/dev-browser/server.sh &
+node skills/dev-browser/server.js &
 ```
 
 Add `--headless` flag if user requests it. **Wait for the `Ready` message before running scripts.**

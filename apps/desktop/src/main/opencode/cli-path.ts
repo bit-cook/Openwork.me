@@ -83,13 +83,19 @@ export function getOpenCodeCliPath(): { command: string; args: string[] } {
       return { command: opencodePath, args: [] };
     }
 
-    // Check other global installations
-    const globalOpenCodePaths = [
-      // Global npm
-      '/usr/local/bin/opencode',
-      // Homebrew
-      '/opt/homebrew/bin/opencode',
-    ];
+    // Check other global installations (platform-specific)
+    const globalOpenCodePaths = process.platform === 'win32'
+      ? [
+          // Windows: npm global installs
+          path.join(process.env.APPDATA || '', 'npm', 'opencode.cmd'),
+          path.join(process.env.LOCALAPPDATA || '', 'npm', 'opencode.cmd'),
+        ]
+      : [
+          // macOS/Linux: Global npm
+          '/usr/local/bin/opencode',
+          // Homebrew
+          '/opt/homebrew/bin/opencode',
+        ];
 
     for (const opencodePath of globalOpenCodePaths) {
       if (fs.existsSync(opencodePath)) {
@@ -167,13 +173,19 @@ export function isOpenCodeBundled(): boolean {
         return true;
       }
 
-      // Check other global installations
-      const globalOpenCodePaths = [
-        // Global npm
-        '/usr/local/bin/opencode',
-        // Homebrew
-        '/opt/homebrew/bin/opencode',
-      ];
+      // Check other global installations (platform-specific)
+      const globalOpenCodePaths = process.platform === 'win32'
+        ? [
+            // Windows: npm global installs
+            path.join(process.env.APPDATA || '', 'npm', 'opencode.cmd'),
+            path.join(process.env.LOCALAPPDATA || '', 'npm', 'opencode.cmd'),
+          ]
+        : [
+            // macOS/Linux: Global npm
+            '/usr/local/bin/opencode',
+            // Homebrew
+            '/opt/homebrew/bin/opencode',
+          ];
 
       for (const opencodePath of globalOpenCodePaths) {
         if (fs.existsSync(opencodePath)) {
