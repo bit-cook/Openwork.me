@@ -174,6 +174,9 @@ export {
   validateLMStudioConfig,
 } from './providers/lmstudio.js';
 
+export { fetchProviderModels } from './providers/fetch-models.js';
+export type { FetchProviderModelsResult } from './providers/fetch-models.js';
+
 // -----------------------------------------------------------------------------
 // Utils Module (from ./utils/)
 // -----------------------------------------------------------------------------
@@ -272,6 +275,7 @@ export {
 export type {
   ProviderType,
   ApiKeyProvider,
+  ModelsEndpointConfig,
   ProviderConfig,
   ModelConfig,
   SelectedModel,
